@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>あやかしとドラゴン — AYAKASHI &amp; DRAGONS</title>
+  <link rel="stylesheet" href="./styles/main.css" />
+  <!-- GitHub Pages 等でも WASM スレッドを使えるようにする（server.py 経由では何もしない） -->
+  <script src="./coi-serviceworker.js"></script>
+</head>
+<body>
+  <!-- ゲーム描画キャンバス -->
+  <canvas id="game"></canvas>
+
+  <!-- Webカメラ入力（非表示・MediaPipeへ渡す） -->
+  <video id="cam" playsinline autoplay muted></video>
+
+  <!-- 起動中ローディング（JS到達で消える） -->
+  <div id="boot">
+    <div class="boot-title">あやかしとドラゴン</div>
+    <div class="boot-sub">AYAKASHI&nbsp;&amp;&nbsp;DRAGONS</div>
+    <div class="boot-load">読み込み中…</div>
+  </div>
+
+  <!-- 致命的エラー表示（通常は非表示） -->
+  <div id="error-overlay" hidden>
+    <h1>起動できませんでした</h1>
+    <p id="error-message"></p>
+    <p class="hint">ローカルサーバー経由で開いているか確認してください（README参照）。</p>
+  </div>
+
+  <!-- 読み込み失敗の安全網（モジュールが起動しない場合に詳細を表示） -->
+  <script>
+    window.__bootError = function (detail) {
+      var ov = document.getElementById('error-overlay');
+      var m = document.getElementById('error-message');
+      if (m) m.textContent = detail;
+      if (ov) ov.hidden = false;
+    };
+    window.addEventListener('error', function (e) {
+      console.error('[boot error]', (e && (e.error || e.message)));
+      if (window.__GAME_STARTED) return;
+      var d = (e && e.message) ? e.message : '読み込みエラー';
+      if (e && e.filename) d += '\n→ ' + e.filename.split('/').slice(-2).join('/') + ':' + e.lineno + ':' + e.colno;
+      if (e && e.error && e.error.stack) d += '\n\n' + e.error.stack;
+      window.__bootError(d);
+    });
+    window.addEventListener('unhandledrejection', function (e) {
+      console.error('[boot rejection]', (e && e.reason));
+      if (window.__GAME_STARTED) return;
+      var r = e && e.reason;
+      window.__bootError('Promise reject:\n' + ((r && (r.stack || r.message)) || String(r)));
+    });
+    setTimeout(function () {
+      if (!window.__GAME_STARTED) {
+        window.__bootError('起動に時間がかかっています。F12 コンソールの赤いエラーを確認してください。ローカルサーバー経由(http://localhost…)で開いているかもご確認を。');
+      }
+    }, 12000);
+  </script>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
