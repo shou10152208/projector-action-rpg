@@ -92,6 +92,12 @@ python3 test/ci_test.py
 > **Pages を有効にするには**（初回のみ）: リポジトリの **Settings → Pages → Source** を **GitHub Actions** に設定してください。
 > Pages 配信ではレスポンスヘッダを設定できないため、同梱の `coi-serviceworker.js` が COOP/COEP を付与して WASM スレッド（認識の高速化）を有効にします。
 
+## ライセンス
+
+- 本リポジトリのコードは [MIT License](./LICENSE)。
+- 同梱の MediaPipe 資産（`vendor/mediapipe/` — バンドル/WASM/モデル）は Google LLC の成果物で [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)。
+- `coi-serviceworker.js` は [gzuidhof/coi-serviceworker](https://github.com/gzuidhof/coi-serviceworker)（MIT）を参考にした実装。
+
 ## 技術メモ
 
 - ビルド不要のバニラ JavaScript (ES Modules) + Canvas 2D + Web Audio（効果音は全てプロシージャル合成）
