@@ -58,6 +58,11 @@
     }, 12000);
   </script>
 
+  <!-- バージョン表示（デプロイ時に CI が version.js をコミットSHA+日付で上書きする。キャッシュ確認用） -->
+  <div id="version-tag" style="position:fixed;right:8px;bottom:6px;font:10px/1 monospace;color:rgba(255,255,255,0.4);z-index:9999;pointer-events:none"></div>
+  <script src="./version.js"></script>
+  <script>document.getElementById('version-tag').textContent = 'ver ' + (window.__APP_VERSION || 'dev');</script>
+
   <script type="module" src="./src/main.js"></script>
 </body>
 </html>

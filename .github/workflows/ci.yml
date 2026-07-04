@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:   # Actions タブから手動実行も可能にする
 
 jobs:
   syntax:
@@ -45,7 +46,7 @@ jobs:
   # 事前に リポジトリ Settings → Pages → Source を「GitHub Actions」にしておくこと
   deploy:
     name: GitHub Pages へデプロイ
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     needs: [syntax, browser]
     runs-on: ubuntu-latest
     permissions:
@@ -57,8 +58,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+      - name: バージョン情報を埋め込む（コミットSHA + 日付）
+        run: echo "window.__APP_VERSION = '${GITHUB_SHA:0:7} $(date -u +%Y-%m-%d)';" > version.js
+      # 成果物名は実行試行ごとにユニークにする。
+      # 固定名だと「Re-run failed jobs」で同名の成果物が重複し
+      # deploy-pages が "Multiple artifacts named ..." で失敗する。
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .
+          name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
       - id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
