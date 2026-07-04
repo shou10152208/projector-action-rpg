@@ -1,0 +1,112 @@
+:root {
+  --bg: #05060f;
+  --ink: #eaf2ff;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Yu Gothic", "YuGothic", "Hiragino Kaku Gothic ProN",
+    "Noto Sans JP", "Meiryo", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  touch-action: none;
+}
+
+#game {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  background: var(--bg);
+}
+
+/* カメラ映像はキャンバスに描画するため本体は隠す */
+#cam {
+  position: fixed;
+  width: 2px;
+  height: 2px;
+  opacity: 0;
+  pointer-events: none;
+  top: -10px;
+  left: -10px;
+}
+
+#boot {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  background: radial-gradient(circle at 50% 40%, #0b1030, #05060f 70%);
+  z-index: 50;
+  transition: opacity 0.6s ease;
+}
+#boot.hidden { opacity: 0; pointer-events: none; }
+
+.boot-title {
+  font-size: clamp(2.4rem, 8vw, 6rem);
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  color: #eaf2ff;
+  text-shadow: 0 0 30px rgba(80, 160, 255, 0.7);
+}
+.boot-sub {
+  font-size: clamp(0.8rem, 2.5vw, 1.4rem);
+  letter-spacing: 0.5em;
+  text-indent: 0.5em;
+  color: #7fb0ff;
+}
+.boot-load {
+  margin-top: 1.4rem;
+  font-size: 0.95rem;
+  color: #9fb3d8;
+  opacity: 0.8;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100% { opacity: 0.35; } 50% { opacity: 0.95; } }
+
+#error-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  text-align: center;
+  padding: 2rem;
+  background: rgba(5, 6, 15, 0.96);
+  z-index: 100;
+}
+/* hidden 属性が付いている間は確実に非表示にする
+   （ID セレクタの display:flex が UA の [hidden]{display:none} に勝つのを防ぐ） */
+#error-overlay[hidden] { display: none; }
+#error-overlay h1 { color: #ff6b8a; font-size: 1.8rem; }
+#error-overlay p { color: #cdd8f0; max-width: 52rem; line-height: 1.6; }
+#error-message {
+  white-space: pre-wrap;
+  text-align: left;
+  font-family: ui-monospace, "Consolas", monospace;
+  font-size: 0.82rem;
+  background: #10152e;
+  border: 1px solid #2a335c;
+  border-radius: 8px;
+  padding: 0.9rem 1.1rem;
+  max-height: 50vh;
+  overflow: auto;
+}
+#error-overlay .hint { color: #8aa0c8; font-size: 0.9rem; }
+#error-overlay code {
+  background: #1a2140; padding: 0.1rem 0.4rem; border-radius: 4px;
+  font-family: monospace;
+}

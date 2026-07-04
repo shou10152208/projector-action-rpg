@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  syntax:
+    name: 構文チェック (node --check)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: すべての JS モジュールを構文チェック
+        run: |
+          set -e
+          shopt -s nullglob globstar
+          fail=0
+          for f in coi-serviceworker.js src/*.js src/**/*.js; do
+            echo "checking $f"
+            node --check "$f" || fail=1
+          done
+          exit $fail
+
+  browser:
+    name: ヘッドレス実走テスト (Playwright)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Playwright + Chromium を導入
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: 起動確認 + フル進行シミュレーション
+        run: python3 test/ci_test.py
+
+  # main が緑になったら GitHub Pages へ自動デプロイ（CD）
+  # 事前に リポジトリ Settings → Pages → Source を「GitHub Actions」にしておくこと
+  deploy:
+    name: GitHub Pages へデプロイ
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [syntax, browser]
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4
