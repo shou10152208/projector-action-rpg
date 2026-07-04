@@ -58,6 +58,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+      - name: バージョン情報を埋め込む（コミットSHA + 日付）
+        run: echo "window.__APP_VERSION = '${GITHUB_SHA:0:7} $(date -u +%Y-%m-%d)';" > version.js
       # 成果物名は実行試行ごとにユニークにする。
       # 固定名だと「Re-run failed jobs」で同名の成果物が重複し
       # deploy-pages が "Multiple artifacts named ..." で失敗する。
