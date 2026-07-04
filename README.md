@@ -2,6 +2,13 @@
 
 [![CI](https://github.com/shou10152208/projector-action-rpg/actions/workflows/ci.yml/badge.svg)](https://github.com/shou10152208/projector-action-rpg/actions/workflows/ci.yml)
 
+## 🎮 いますぐ遊ぶ
+
+**→ https://shou10152208.github.io/projector-action-rpg/**
+
+インストール不要。ブラウザで開いてカメラを許可するだけで遊べます（`https` 配信なのでスマホ・タブレットでもカメラOK）。
+カメラが無ければそのままマウス／キーボードで遊べます。オフラインで遊びたい場合は下の[クイックスタート](#クイックスタート)へ。
+
 > プロジェクターで壁に投影し、Webカメラの前で**全身を動かして**遊ぶ協力型アクションRPG（最大4人）。
 > 和の妖怪と洋の魔物が入り混じる異界を旅し、レベルアップでスキルを選び、最終ボス**妖竜**を討伐せよ。
 
